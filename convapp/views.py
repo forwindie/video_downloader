@@ -11,13 +11,14 @@ def index(request):
         form = QueryForm(request.POST)
         if form.is_valid:
             link = request.POST['link']
+            with youtube_dl.YoutubeDL({'format': '134'}) as ydl:
+                result = ydl.extract_info(link, download=False)
+                video_url = result['url']
             form.save()
-            return redirect(link)
+            return redirect(video_url)
     else:
         form = QueryForm()
 
     return render(request, 'index.html', {'links': links, 'form': form})
 
 
-def download():
-    pass
